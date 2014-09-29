@@ -1,0 +1,7 @@
+# Ignore the large data files
+GATE/
+code/tweets/
+lecture-notes/
+references/
+supplied-data/
+tweets/

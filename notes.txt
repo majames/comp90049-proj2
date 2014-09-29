@@ -1,0 +1,14 @@
+
+Feature selection:
+    Create feature vectors with respect to the users NOT the tweets
+
+    Eliminiate stop words
+
+    Use Jaccard Coefficent instead of Stemming?
+    
+    Only consider words which appear more frequently??
+    
+    Identify words which carry local relevance
+
+Misc:
+    Line 89421 of train-reduced had an error 'author'
