@@ -18,7 +18,26 @@ def read_tweets_file(filename):
 
     return tweets
 
-def modify_tweets(tweets, flag):
+def read_dictionary_file(filename):
+    """ Reads a file mapping Twitter slang to a normalised word """
+    f = open(filename, 'rU')
+    lines = f.readlines()
+    f.close()
+
+    d = {}
+    for line in lines:
+        words = line.split('\t')
+
+        if d.get(words[0]):
+            print('Error: OOV word should not map to multiple ' 
+                  'different entries!')
+            sys.exit()
+        else:
+            d[words[0]] = re.sub(r'\n', '', words[1])
+
+    return d
+
+def modify_tweets(tweets, flag, d):
     """ Modify the raw user id.-tweet tupples to be lower case and contain only 
         alphabetic characters (including space)"""
     
@@ -28,21 +47,34 @@ def modify_tweets(tweets, flag):
     stop = stopwords.words('english')
     mtweets = []
     for tweet in tweets:
-        # make all letters in the tweet text lower case
-        mtweet_text = tweet[2].lower()
-
-        # remove all non-alphabetic characters (excluding space)
-        mtweet_text = re.sub(r'[^a-z ]', '', mtweet_text)
+        # intialise the Porter Stemmer
         stemmer = PorterStemmer()
-        if (flag == '-B'):
+
+        if flag == '-B':
+            # make all letters in the tweet text lower case
+            mtweet_text = tweet[2].lower()
+            
             # split the tweet into words
             mtweet_words = mtweet_text.split(' ')
+
+            # normalise the words using the Unimelb ESMN
+            tweet_words = []
+            for word in mtweet_words:
+                if word in d:
+                    tweet_words.append(d[word])
+                else:
+                    tweet_words.append(word)
+            mtweet_words = tweet_words
+
+            # remove all non-alphabetic characters (excluding space) 
+            mtweet_words = [re.sub(r'[^a-z ]', '', mword) for mword in 
+                            mtweet_words if re.sub(r'[^a-z ]', '', mword)]
 
             # stem the tweet words
             mtweet_words = [stemmer.stem(word) for word in mtweet_words]
 
             # remove words that are 2 characters or less
-            mtweet_words = [word for word in mtweet_words if len(word) > 2]
+            mtweet_words = [word for word in mtweet_words if len(word) > 1]
             
             # remove common words
             mtweet_words = [word for word in mtweet_words if word not in stop]
@@ -69,19 +101,22 @@ def write_tweets_to_file(tweets, filename):
 
 def main():
     """ Entry point """
-    if len(sys.argv) != 4:
-        print('usage: tweets-extractor.py FLAG src-file ' 
-              'destination-file')
+    if len(sys.argv) != 5:
+        print('usage: tweets-extractor.py FLAG dict-file ' 
+              'src-file destination-file')
         sys.exit()
 
-
-    src_filename = sys.argv[2]
-    dest_filename = sys.argv[3]
+    flag_str = sys.argv[1]
+    dict_filename = sys.argv[2]
+    src_filename = sys.argv[3]
+    dest_filename = sys.argv[4]
 
     tweets = []
     tweets = read_tweets_file(src_filename)
 
-    tweets = modify_tweets(tweets, sys.argv[1])
+    d = read_dictionary_file(dict_filename)
+
+    tweets = modify_tweets(tweets, flag_str, d)
     write_tweets_to_file(tweets, dest_filename)
 
 if __name__ == '__main__':
