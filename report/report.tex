@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage[left=20mm,right=20mm,top=20mm,bottom=20mm]{geometry}
+\usepackage{multirow}
 \usepackage[pdftex]{graphicx}
 \usepackage[hyphens]{url}
 \usepackage{natbib}
@@ -15,25 +16,30 @@ The objective of Project 2 was to build a geolocation classifier for Twitter use
 
 \section{Preprocessing Input Data}  
 
-Several heuristics were employed in the preprocessing of the twitter document and the feature vectors, associated with the training, development and test input files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data. The training, development and test instances were then re-constructed using the new feature attributes and Twitter data.\\\\
-The reduction in the size of the input files, due to the preprocessing steps outlined below, are summarised in Table \ref{table:input-table}.
+Several heuristics were employed in the preprocessing of the the feature vector attributes and the training, development and test twitter files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data, to produce new training, development and test instances.\\\\
+The reduction in the size of the feature vector instance files, due to the preprocessing steps outlined below, are summarised in Table \ref{table:input-table}.
+
+\subsection{Unimelb English Social Media Normalisation Lexicon - Twitter Text Normalisation}
+Normalising text into a canocial form increases the consistency of the text and reduces the problem sample space (by reducing the number of different tokens to consider). Good text normalisation techniques are highly document dependent, there is no all purpose normalisation procedure.\\\\
+The supplied Twitter data was normalised using the University of Melbourne's (Unimelb)English Social Media Normalisation (ESMN) Lexicon. The Unimelb ESMN Lexicon mapped OOV words to IV words, therefore a simple (and quick) linear search and substitution through the vector attributes and twitter data was all that was required to (somewhat) normalise the vector attributes and twitter data.\\\\
+The ESMN Lexicon was chosen due to it offering a fast, lightweight and easy-to-use solution that was suitable for high-volume microblog (Twitter) pre-processing. Further, the ESMN Lexicon had a large volume of normalisation, containing over 40,000 entries \citep{bald-ESMNL}. 
 
 \subsection{Word Stemming}
 
 Stemming is the process of reducing inflicted words to their stem (base form) \citep{pm-stem}. A Porter Stemmer algorithm was used in the preprocessing of the location and tweet files. \\\\
-The Porter Stemmer algorithm was found to further distort a subset of misspelled words within the tweet bodies, however the Porter Stemmer was also capable of (partially) correcting miss-spelled location words. Further, the Porter Stemmer reduced the sample space of the problem by introducing consistency in tweet words and reducing the number of characters in the preprocessed tweets.\\\\
+The Porter Stemmer algorithm was found to further distort a subset of misspelled words within the tweet bodies, however the Porter Stemmer was also capable of (partially) correcting miss-spelled location words. Further, the Porter Stemmer reduced the sample space of the problem by introducing consistency in tweet words and reducing the number of words in the preprocessed tweets.\\\\
 A sample of differences between tweet and feature vector strings with and without the Porter Stemmer preprocessing step can be seen in Table \ref{table:stem-tweet}.
    
-\begin{table} [h]
+\begin{table} [ht]
 \caption{Stemming Tweets}
 \begin{center}
-	\begin{tabular}{| c | p{5.5cm} | p{5.5cm} |}
+	\begin{tabular}{| c | p{6cm} | p{6cm} |}
 	\hline
 	  & \multicolumn{2}{|c|}{\textbf{Tweet Text}}\\
 	\hline
-	\textbf{No Porter Stemming} &  hanh khangs wedding friends going fabulous night & foursquare made breakfast meeting morning bit interesting usual\\
+	\textbf{No Porter Stemming} & yelled egypt phone today true story & family friends atlanta motor speedway first time experience\\
 	\hline
-	\textbf{Porter Stemming}  & hanh khang wed friend fabul night & whi foursquar made breakfast meet thi morn bit interest usual\\
+	\textbf{Porter Stemming}  & yell egypt phone today true stori & famili friend atlanta motor speedway first time experi \\
 	\hline
 	\end{tabular}
 \end{center}
@@ -41,7 +47,7 @@ A sample of differences between tweet and feature vector strings with and withou
 \end{table}
 
 \subsection{Removal of Stop Words And Excess White Space}
-A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:alpha}). Common words and words of one-character length carried little entropy\citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}).\\\\
+A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:alpha}). Common words and words of one-character length carried little entropy\citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}), and therefore were removed from the vector attributes and corresponding twitter data.\\\\
 It is worth noting that stop words can cause problems when a tweet contains informative 'geolocating' phrases that include them. However, as a 'bag of words' model was used for modelling the twitter document, information contained within phrases was already lost. \\\\
 The list of stop words, contained within the NLPK library for python, was used to remove stop words from the locations and tweet texts.
 
@@ -52,31 +58,33 @@ The list of stop words, contained within the NLPK library for python, was used t
 	\hline
 	 \textbf{Removed Feature Token} & \textbf{Example Tweets}\\
 	\hline
-	'i', 'n', 'so' & after dinner i wa put on mr pot n pan  so i can whack terrorist in the head but i have to sing a song while i do it \\
+	'i', 'n', 'so' & omg accid on i n so scari httpyfrogcomhrwadj \\
 	\hline
-	'my', 'me'  & shoutout to my love in the us virgin isalnd on jessizfreshcom right nowsend me some sunshin thi pa weather is killin me\\
+	'my', 'me'  & my mom just told me to updat my websit next i suppos my grandma will tell me my tweet are shit\\
 	\hline
 	\end{tabular}
 	\label{table:stop-words}
 \end{table}
 
-\subsection{GATE TwitIE - Twitter Text Normalisation}
-
 \subsection{Per User Feature Vectors}
-Initially, an instance of the feature vector was supplied for each individual tweet. However, as Project 2 involved the geolocation of Twitter USERS the supplied training, development and test data was further restructured to contain a feature vector for each individual Twitter user.\\\\
-The restructuring of the model vectors to be per-user had the advantage of reducing the number of vectors that had to be processed. Further, despite the reduction in data-points, all the information was retained in the now richer data points (Table \ref{table:user-vectors-table}).
+Initially, a feature vector instance was supplied for each individual tweet. However, as Project 2 involved the geolocation of Twitter USERS, the supplied training, development and test data was restructured to contain a feature vector for each individual Twitter user.\\\\
+The restructuring of the model vectors to be per-user had the advantage of reducing the number of vectors that had to be processed. The potential disadvantage of the reduction in data-points in the new per-user model was offset by the information being retained in the now richer instance vectors (Table \ref{table:user-vectors-table}).
 
 \begin{table} [ht]
 \caption{Feature Vector Restructuring}
 \centering
-	\begin{tabular}{| p{6cm} | c | c | c |}
+	\begin{tabular}{| c | c | c |}
 	\hline
-	 & \textbf{Training File} & \textbf{Development File}  & \textbf{Test File}\\
+	 & \multicolumn{2}{ c| }{\textbf{Training and Development Files}}	\\
+	\cline{2-3}
+	 & \textbf{Per Tweet} & \textbf{Per User}\\
 	\hline
-	\textbf{Number of Vectors} & 0 & 0 & 0\\
+	\textbf{Number of Instance Vectors} & 958,359 & 45,572\\
 	\hline
-	\textbf{Percentage of Vectors With At Least 1 Non-Zero dimension} & 0\% & 0\% & 0\%\\
-	\hline
+	\multirow{2}{*}{\textbf{Vectors With At Least 1 Non-Zero Dimension}} & 748,851 & 44,089\\
+	\cline{2-3}
+	& 78.14\% & 96.75\%\\
+	\hline	
 	\end{tabular}
 \label{table:user-vectors-table}
 \end{table}
@@ -86,16 +94,11 @@ The restructuring of the model vectors to be per-user had the advantage of reduc
 \centering
 	\begin{tabular}{| c | c | c | c |}
 	\hline
-	 & \textbf{Feature Vector} & \textbf{Twitter File}  & \textbf{Training and Development File}\\
+	 & \textbf{Attributes} & \textbf{Training Instances} & \textbf{Development Instances}  \\
 	\hline
-	\textbf{Raw Word Count} & 66,491,876 & &\\
+	\textbf{Raw Feature Vectors} & 387 & 766,841 & 191,518\\
 	\hline
-	\textbf{Final Word Count} & 37,143,754 & &\\
-	\hline
-	\hline
-	\textbf{Raw Character Count} & 66,491,876 & &\\
-	\hline
-	\textbf{Final Character Count} & 37,143,754 & &\\
+	\textbf{Processed Feature Vectors} & 366 & 22,993 & 22,579\\
 	\hline
 	\end{tabular}
 \label{table:input-table}

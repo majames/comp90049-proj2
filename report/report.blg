@@ -3,47 +3,49 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: report.aux
 The style file: plain.bst
 Database file #1: references.bib
-Warning--I didn't find a database entry for "pm-stem"
-Warning--I didn't find a database entry for "ra-stop"
-You've used 0 entries,
+Name 1 in "Popovic, Mirko, and Willett, Peter" has a comma at the end for entry pm-stem
+while executing---line 1049 of file plain.bst
+Name 1 in "Popovic, Mirko, and Willett, Peter" has a comma at the end for entry pm-stem
+while executing---line 1090 of file plain.bst
+You've used 3 entries,
             2118 wiz_defined-function locations,
-            499 strings with 4009 characters,
-and the built_in function-call counts, 18 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 7
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+            519 strings with 4715 characters,
+and the built_in function-call counts, 1111 in all, are:
+= -- 111
+> -- 44
+< -- 1
++ -- 18
+- -- 14
+* -- 74
+:= -- 180
+add.period$ -- 10
+call.type$ -- 3
+change.case$ -- 15
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 3
+duplicate$ -- 46
+empty$ -- 91
+format.name$ -- 14
+if$ -- 241
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 3
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 3
+missing$ -- 4
+newline$ -- 18
+num.names$ -- 6
+pop$ -- 20
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 13
 quote$ -- 0
-skip$ -- 1
+skip$ -- 33
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 75
+swap$ -- 12
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
+type$ -- 10
 warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 2
-(There were 2 warnings)
+while$ -- 10
+width$ -- 4
+write$ -- 36
+(There were 2 error messages)

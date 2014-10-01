@@ -73,11 +73,11 @@ def modify_tweets(tweets, flag, d):
             # stem the tweet words
             mtweet_words = [stemmer.stem(word) for word in mtweet_words]
 
-            # remove words that are 2 characters or less
-            mtweet_words = [word for word in mtweet_words if len(word) > 1]
+            # remove words that are 1 characters or less
+            #mtweet_words = [word for word in mtweet_words if len(word) > 1]
             
             # remove common words
-            mtweet_words = [word for word in mtweet_words if word not in stop]
+            #mtweet_words = [word for word in mtweet_words if word not in stop]
 
             mtweet_text = ' '.join(mtweet_words)
 
