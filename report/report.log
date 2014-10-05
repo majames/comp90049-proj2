@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.8.4)  1 OCT 2014 13:19
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.8.4)  5 OCT 2014 17:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -257,47 +257,58 @@ Underfull \hbox (badness 10000) in paragraph at lines 50--53
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
+Underfull \hbox (badness 10000) in paragraph at lines 70--74
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--74
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--74
 
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 113--115
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
 
  []
 
 
-LaTeX Warning: Reference `table:subdist' on page 3 undefined on input line 116.
+LaTeX Warning: Reference `table:subdist' on page 3 undefined on input line 120.
 
 
+[3]
 
-LaTeX Warning: Reference `table:alg-table1' on page 3 undefined on input line 1
-20.
-
-
-LaTeX Warning: Reference `table:alg-table2' on page 3 undefined on input line 1
-20.
+LaTeX Warning: Reference `table:alg-table1' on page 4 undefined on input line 1
+24.
 
 
-LaTeX Warning: Reference `table:alg-table3' on page 3 undefined on input line 1
-20.
+LaTeX Warning: Reference `table:alg-table2' on page 4 undefined on input line 1
+24.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--121
+LaTeX Warning: Reference `table:alg-table3' on page 4 undefined on input line 1
+24.
 
- []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 125--128
+Underfull \hbox (badness 10000) in paragraph at lines 123--125
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 125--128
+Underfull \hbox (badness 10000) in paragraph at lines 129--132
 
  []
 
-[3] (./report.bbl) [4] (./report.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--132
+
+ []
+
+(./report.bbl) [4] (./report.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -305,11 +316,11 @@ LaTeX Warning: There were undefined references.
 Here is how much of TeX's memory you used:
  2407 strings out of 494985
  33665 string characters out of 6180357
- 102401 words of memory out of 5000000
+ 100401 words of memory out of 5000000
  5609 multiletter control sequences out of 15000+600000
  9157 words of font info for 32 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 38i,9n,23p,530b,305s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,9n,23p,587b,305s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texl
@@ -317,7 +328,7 @@ ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmti10.pfb>
-Output written on report.pdf (4 pages, 111335 bytes).
+Output written on report.pdf (4 pages, 113353 bytes).
 PDF statistics:
  45 PDF objects out of 1000 (max. 8388607)
  31 compressed objects within 1 object stream

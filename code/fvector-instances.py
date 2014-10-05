@@ -37,7 +37,8 @@ def parse_attributes(filename):
 
     attributes = [re.sub(r'\n', '', attribute) for attribute in attributes] 
 
-    return attributes
+    # ignore the first user-id attribute
+    return [attr for attr in attributes if attr != 'id']
 
 def parse_classes(filename):
     """ Get the location of each user """
@@ -132,9 +133,14 @@ def write_vectors_to_file(dest_filename, vectors_dict, attributes):
 
     # write the .arff file header 
     f.write('@RELATION twitter-loc-reduced\n')
+    f.write('@ATTRIBUTE id NUMERIC\n')
     for attr in attributes:
         f.write('@ATTRIBUTE ' + attr + ' NUMERIC\n')
     f.write('@ATTRIBUTE location {LA,NY,C,At,SF}\n')
+
+    instance = vectors_dict.values()[0]
+    print('length of attributes: ' + str(len(attributes)))
+    print('length of instance vector: ' + str(len(instance.split(','))))
 
     # write the instances of vectors to file
     f.write('@DATA\n')

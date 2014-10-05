@@ -12,11 +12,11 @@
 \maketitle
 
 \section{Introduction}
-The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). A feature vector, containing 386 distinct words, and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and Bayesian classification algorithms were explored in Project 2.
+The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). The set of nominal classes (Twitter user locations) was restricted to Chicago, New York, San Francisco, Atlanta and Los Angeles. Feature vectors, containing 386 distinct attributes (words), and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and Bayesian classification algorithms were explored in Project 2.
 
 \section{Preprocessing Input Data}  
 
-Several heuristics were employed in the preprocessing of the the feature vector attributes and the training, development and test twitter files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data, to produce new training, development and test instances.\\\\
+Several heuristics were employed in the preprocessing of the the feature vector attributes and the training, development and test twitter files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data, to produce new training, development and test vector instances.\\\\
 The reduction in the size of the feature vector instance files, due to the preprocessing steps outlined below, are summarised in Table \ref{table:input-table}.
 
 \subsection{Unimelb English Social Media Normalisation Lexicon - Twitter Text Normalisation}
@@ -68,7 +68,9 @@ The list of stop words, contained within the NLPK library for python, was used t
 
 \subsection{Per User Feature Vectors}
 Initially, a feature vector instance was supplied for each individual tweet. However, as Project 2 involved the geolocation of Twitter USERS, the supplied training, development and test data was restructured to contain a feature vector for each individual Twitter user.\\\\
-The restructuring of the model vectors to be per-user had the advantage of reducing the number of vectors that had to be processed. The potential disadvantage of the reduction in data-points in the new per-user model was offset by the information being retained in the now richer instance vectors (Table \ref{table:user-vectors-table}).
+The restructuring of the model vectors to be per-user had the advantage of reducing the number of vectors that had to be processed. The potential disadvantage of the reduction in data-points in the new per-user model was offset by the information being retained in the now richer instance vectors (Table \ref{table:user-vectors-table}).\\\\
+After restructuring the instances to be per-user, the number of training and development instances was 22,993 and 22,579 respectively. The similarity in the number of training and development instances was inappropriate as ideally the number of training instances should be maximised whilst still allowing enough development instances to sufficiently test the explored machine learning algorithms.\\\\
+Originally, the ratio of training to development instances was approximately $4:1$. To re-establish the original balance of training and development data 13,465 development instances were relocated into the training file resulting in 36,458 training instances and 9,114 development instances.    
 
 \begin{table} [ht]
 \caption{Feature Vector Restructuring}
@@ -98,7 +100,7 @@ The restructuring of the model vectors to be per-user had the advantage of reduc
 	\hline
 	\textbf{Raw Feature Vectors} & 387 & 766,841 & 191,518\\
 	\hline
-	\textbf{Processed Feature Vectors} & 366 & 22,993 & 22,579\\
+	\textbf{Processed Feature Vectors} & 352 & 36,458 & 9,114\\
 	\hline
 	\end{tabular}
 \label{table:input-table}
@@ -106,7 +108,9 @@ The restructuring of the model vectors to be per-user had the advantage of reduc
 
 \section{Geolocation Classification Algorithms And Results}
 
-All of the string approximation matching algorithms used in Project 1 used very little memory with worst case memory complexity of $O(nm)$, where $n$ is the character length of a location query and $m$ is the length of a tweet. Therefore, the following analysis will compare and contrast algorithm run times and matching effectiveness.    
+The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. Supervised Machine Learning (ML) techniques were explored, that is ML techniques in which the class value of the training data is exposed to the ML algorithms. A holdout strategy was used to separate the data used for training the ML algorithms, training instances, and the data used for testing the performance of the ML algorithms, development instances.
+
+\subsection{0-R and 1-R: Baseline Establishment}   
 
 \subsection{Sub-Distance: Needlemen-Wunsch and Smith-Waterman Combined}
 

@@ -1,4 +1,7 @@
 
+Problems:
+    Duplicate attributes, I assume they were introduced after the text normalisation
+
 Feature selection:
     Create feature vectors with respect to the users NOT the tweets
 
@@ -9,6 +12,9 @@ Feature selection:
     Only consider words which appear more frequently??
     
     Identify words which carry local relevance
+
+Weka:
+    Any algorithm can NOT guess any attribute
 
 Misc:
     Line 89421 of train-reduced had an error 'author'

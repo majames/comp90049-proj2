@@ -64,7 +64,8 @@ def modify_attributes(attributes, normal_dict):
         if mattribute:
             mattributes.append(mattribute + '\n')
 
-    return mattributes
+    # remove duplicate attributes after normalisation
+    return list(set(mattributes))
 
 def write_new_attributes_to_file(filename, attributes):
     """ Writes the new vector attributes to file """
