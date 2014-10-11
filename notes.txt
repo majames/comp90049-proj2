@@ -16,5 +16,92 @@ Feature selection:
 Weka:
     Any algorithm can NOT guess any attribute
 
+    0-R:
+        Guess the class which is the most popular class. Good for establishing
+        a baeline classifier.
+
+        If the baseline performs better than other methods it implies the
+        attributes are NOT very informative.
+
+    1-R:
+        Can be thought of as a one rule decision tree. For each attribute assign
+        an associated class for an attribute-value. Use attribute which minimises
+        the error rate.
+
+        Min bucket size = 6 - stops 1-R from over fitting
+
+    Naive Bayes:
+        2 main assumptions:
+            - Attributes are equally important
+            - Attributes are assumed to be independent of each other given the class
+
+        How does it work using numeric attribute values???
+
+        Assumption of independence is OK because we dont care about the actual probablities... 
+        what we care is that the greatest probablity is assigned to the correct class. Redundant attributes cause problems with Naive Bayes due to their dependence. It is NOT a case of the more attributes the better.
+
+        Redundant attributes 
+
+
+    Naive Bayes Multinomial:
+
+        Performs like a fucking boss!
+
+    J48:
+        Decision tree C4.5
+
+        Splits the entire data-set into 2, top-down, recursive split to produce a tree
+
+        Select attribute for the root node. Split instances into subsets, one for each branch extending from the root. Repeat recursively for each branch, using only instances that reach said branch.
+        Stop when all instances have the same class.
+
+        Key lies in selecting which attribute to split on for the 'root' node. We want to split on a node that we will not need to recurse on, i.e. a node that only has class instances as the children... choose the purest node. 
+
+        Compute Entropy calculation that gains the most bits of information!
+
+        Advantages:
+            Simple to understand the output of J48
+            Robust and efficent
+
+Evaluation:
+    
+    Rule-of-thumb:
+        If you have lots of data use a percentage split, else you can use 10-fold
+        cross validation.
+
+    Repeated-holdout:
+        Divide data set, independtly, 10 seperate times into training and test sets
+        of some ratio
+
+    Cross-validation: 
+        Improves on repeated hold-out by reducing the variance
+
+        Divide the data set once! Each segment is held-out as the test set once.
+        The algorithm is run N+1 times where N is the number of segments (folds),
+
+    Stratified Cross-Validation
+
 Misc:
-    Line 89421 of train-reduced had an error 'author'
+    Overfitting: machine learner fits the data too tightly, and does NOT generalise
+                 well to test data.
+
+
+Results for Training Set:
+
+    0-R: 29.7 %
+
+    1-R: 32.4 %
+
+    Lazy IBk: 31.6 % -- takes 5 - 10 minutes to run
+
+    Naive Bayes: 28.28 % (!!)
+
+    J48: 40.89 %
+
+Results for Entire Data Set:
+
+    0-R: 29.7 %
+
+    Naive Bayes: 29.66 %
+
+    J48: 72.22 % THIS IS CHEATING!!!

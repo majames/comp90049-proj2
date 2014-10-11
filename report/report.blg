@@ -7,45 +7,45 @@ Name 1 in "Popovic, Mirko, and Willett, Peter" has a comma at the end for entry 
 while executing---line 1049 of file plain.bst
 Name 1 in "Popovic, Mirko, and Willett, Peter" has a comma at the end for entry pm-stem
 while executing---line 1090 of file plain.bst
-You've used 3 entries,
+You've used 4 entries,
             2118 wiz_defined-function locations,
-            519 strings with 4715 characters,
-and the built_in function-call counts, 1111 in all, are:
-= -- 111
-> -- 44
+            528 strings with 4858 characters,
+and the built_in function-call counts, 1390 in all, are:
+= -- 141
+> -- 51
 < -- 1
-+ -- 18
-- -- 14
-* -- 74
-:= -- 180
-add.period$ -- 10
-call.type$ -- 3
-change.case$ -- 15
++ -- 21
+- -- 16
+* -- 94
+:= -- 227
+add.period$ -- 13
+call.type$ -- 4
+change.case$ -- 19
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 46
-empty$ -- 91
-format.name$ -- 14
-if$ -- 241
+cite$ -- 4
+duplicate$ -- 57
+empty$ -- 116
+format.name$ -- 16
+if$ -- 298
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 4
-newline$ -- 18
-num.names$ -- 6
-pop$ -- 20
+int.to.str$ -- 4
+missing$ -- 5
+newline$ -- 23
+num.names$ -- 8
+pop$ -- 22
 preamble$ -- 1
-purify$ -- 13
+purify$ -- 16
 quote$ -- 0
-skip$ -- 33
+skip$ -- 40
 stack$ -- 0
-substring$ -- 75
-swap$ -- 12
+substring$ -- 99
+swap$ -- 13
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 10
+type$ -- 14
 warning$ -- 0
-while$ -- 10
-width$ -- 4
-write$ -- 36
+while$ -- 14
+width$ -- 5
+write$ -- 47
 (There were 2 error messages)

@@ -5,6 +5,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage[hyphens]{url}
 \usepackage{natbib}
+\usepackage{amsmath}
 
 \begin{document}
 
@@ -14,17 +15,20 @@
 \section{Introduction}
 The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). The set of nominal classes (Twitter user locations) was restricted to Chicago, New York, San Francisco, Atlanta and Los Angeles. Feature vectors, containing 386 distinct attributes (words), and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and Bayesian classification algorithms were explored in Project 2.
 
-\section{Preprocessing Input Data}  
+\section{Preprocessing Input Data - Feature Engineering}  
 
 Several heuristics were employed in the preprocessing of the the feature vector attributes and the training, development and test twitter files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data, to produce new training, development and test vector instances.\\\\
 The reduction in the size of the feature vector instance files, due to the preprocessing steps outlined below, are summarised in Table \ref{table:input-table}.
 
 \subsection{Unimelb English Social Media Normalisation Lexicon - Twitter Text Normalisation}
+\label{subsec:normal}
+
 Normalising text into a canocial form increases the consistency of the text and reduces the problem sample space (by reducing the number of different tokens to consider). Good text normalisation techniques are highly document dependent, there is no all purpose normalisation procedure.\\\\
 The supplied Twitter data was normalised using the University of Melbourne's (Unimelb)English Social Media Normalisation (ESMN) Lexicon. The Unimelb ESMN Lexicon mapped OOV words to IV words, therefore a simple (and quick) linear search and substitution through the vector attributes and twitter data was all that was required to (somewhat) normalise the vector attributes and twitter data.\\\\
 The ESMN Lexicon was chosen due to it offering a fast, lightweight and easy-to-use solution that was suitable for high-volume microblog (Twitter) pre-processing. Further, the ESMN Lexicon had a large volume of normalisation, containing over 40,000 entries \citep{bald-ESMNL}. 
 
 \subsection{Word Stemming}
+\label{subsec:stem}
 
 Stemming is the process of reducing inflicted words to their stem (base form) \citep{pm-stem}. A Porter Stemmer algorithm was used in the preprocessing of the location and tweet files. \\\\
 The Porter Stemmer algorithm was found to further distort a subset of misspelled words within the tweet bodies, however the Porter Stemmer was also capable of (partially) correcting miss-spelled location words. Further, the Porter Stemmer reduced the sample space of the problem by introducing consistency in tweet words and reducing the number of words in the preprocessed tweets.\\\\
@@ -47,7 +51,7 @@ A sample of differences between tweet and feature vector strings with and withou
 \end{table}
 
 \subsection{Removal of Stop Words And Excess White Space}
-A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:alpha}). Common words and words of one-character length carried little entropy\citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}), and therefore were removed from the vector attributes and corresponding twitter data.\\\\
+A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:normal} and \ref{subsec:stem}). Common words and words of one-character length carried little entropy\citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}), and therefore were removed from the vector attributes and corresponding twitter data.\\\\
 It is worth noting that stop words can cause problems when a tweet contains informative 'geolocating' phrases that include them. However, as a 'bag of words' model was used for modelling the twitter document, information contained within phrases was already lost. \\\\
 The list of stop words, contained within the NLPK library for python, was used to remove stop words from the locations and tweet texts.
 
@@ -108,21 +112,85 @@ Originally, the ratio of training to development instances was approximately $4:
 
 \section{Geolocation Classification Algorithms And Results}
 
-The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. Supervised Machine Learning (ML) techniques were explored, that is ML techniques in which the class value of the training data is exposed to the ML algorithms. A holdout strategy was used to separate the data used for training the ML algorithms, training instances, and the data used for testing the performance of the ML algorithms, development instances.
+The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. The ML implementations available via the Weka GUI framework were explored. Supervised Machine Learning (ML) techniques were explored, that is ML techniques in which the class value of the training data is exposed to the ML algorithms.\\\\
+A holdout strategy was used to evaluate Weka's ML algorithms. The holdout strategy involved separating the data used for training the ML algorithms, training instances, and the data used for testing the performance of the ML algorithms, development instances. The number of vector instances was considered large enough, and number of classes small enough, to render N-fold validation inappropriate.\\\\
+The results of the different Weka ML algorithms are summarised in table ...
 
 \subsection{0-R and 1-R: Baseline Establishment}   
 
-\subsection{Sub-Distance: Needlemen-Wunsch and Smith-Waterman Combined}
+0-R and 1-R algorithms are popular rule based machine learning algorithms often used for establishing baselines in machine learning tasks. 0-R and 1-R algorithms have been proven to perform well on many datasets, achieving close to more complex solution accuracies, whilst having drastically reduced complexity \cite{holte-1R}. The 0-R and 1-R baselines were used to determine the intrinsic difficulty of Project 1 and gauge the performance of more complex ML solutions.
 
-The runtime and matching performance of the Smith-Waterman algorithm was a definite step forward in finding an edit-distance based solution to the string approximation task of Project 1. However, the disadvantage of S-W matching location strings anywhere within a longer tweet string, including mid-word, without penalty resulted in additional false positives. The Sub-Distance algorithm was developed to address this undesirable S-W characteristic.\\\\
-Sub-Distance involved implementing two small changes to the N-W Whole String Matching algorithm to significantly improve its matching performance:
+\subsubsection{0-R Decision Rule}
+
+The 0-R ML algorithm is (arguably) the most simplistic ML algorithm available in the Weka libraries. 0-R classifies every instance with the class value that occurs must frequently in the training data.\\\\
+The Los Angeles, LA, class occurred most frequently in the training data, occurring in $\frac{11,126}{36,458} = 30.5\%$ of instances. Therefore, the Weka 0-R model classified each Twitter user test instance as having being Tweeted from within LA, resulting in a classification accuracy of $29.7\%$. Further, the 0-R ML model was built extremely quickly, taking only 0.02 seconds to build.    
+
+\subsubsection{1-R Decision Rule}
+
+The 1-R ML algorithm is simplistic in nature and often performs very well on many datasets \cite{holte-1R}. 1-R ML algorithm involves making a decision on which class a test instance corresponds to based on a single attribute value. The attribute which minimises the error rate of the decision is used as the splitting attribute.\\\\
+The Weka 1-R ML algorithm split on the 'twistenfm' attribute, as the 'twistenfm attribute' had the smallest error rate producing $\frac{12,764}{36,458} = 35\%$ correctly classified instances on the training data. 1-R performed reasonably well correctly classifying $32.9\%$ of development instances. The 1-R ML model was built in the very quick time of 1.31 seconds. 
+
+\subsection{Naive Bayes}
+
+The Naive Bayes classifier is a simple probabilistic classifier based on Baye's theorem (\ref{eq:bayes}). 
+
+\begin{gather*}
+P(Class|Attributes) = \frac{P(Attributes|Class)P(Attributes)}{P(Class)} \tag{1}\label{eq:bayes}
+\end{gather*}
+Naive Bayes classifiers rests on two key assumptions:
+
 \begin{enumerate}
-\item The initialisation of the row associated with the empty character in the location name and the tweet text was altered to have an edit distance score associated with the depth of a character in a word NOT the whole string (Table \ref{table:subdist}). The intuition behind this change is that location (query) matches that start at the start of a word should not be penalised, however location matches that start mid-word should be penalised in relation to how deep into the word said match is.
-\item Once the scores of the bottom row had been calculated, the lowest score was taken as the edit-distance cost, rather than the score in the rightmost corner. This meant that we didn't care about how many characters we skipped after we stopped matching the location name within the tweet text (a reasonable assumption). 
-\end{enumerate}
-Sub-Distance had a slightly smaller runtime than S-W and N-W Whole String, 2.83 seconds. Sub-Distances runtime result was expected as both N-W whole string and S-W have the same complexity as Sub-Distance, $O(nm)$.\\\\
-Sub-Distance still generated more false-positives compared to N-W Tokenised Words, as Sub-Distance still suffered from not penalising location matches that matched the prefix of a larger word (similar to S-W). However, Sub-Distance achieved closer matching to the N-W Tokenised Words baseline than S-W, as it was less likely to match location names that started mid-word (Table \ref{table:alg-table1}, \ref{table:alg-table2} and \ref{table:alg-table3}). 
+\item Attributes are equally important, binary values are assigned to each attribute indicating whether they are present or not?????
+\item Attributes are assumed to be conditionally independent, that is attributes are assumed to be independent of one another, given a class (\ref{eq:naive}).
+\end{enumerate}   
+The assumption of conditional independence allows simple maximum likelihood estimations to be used to calculate the probabilities within equation. The approximation of attribute independence is often reasonable because the Naive BayesML classifier does not care about the actual probability of $P(Class|Attributes)$ rather it cares about the relative probabilities of $P(Class|Attributes)$.
 
+\begin{gather*}\tag{2}\label{eq:naive}
+\begin{split}
+P(Class|Attributes) &= \frac{P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)}{P(Class)}\\
+&= P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)
+\end{split}
+\end{gather*}
+The multiplication of a zero probability attribute class conditional can degrade the performance of Naive Bayes, the other probabilities calculations are 'discarded' regardless of their strength. The Naive Bayes method implemented in Weka handles the zero-frequency problem by adding one to the count of an attribute given a class. The 'add-one' solution somewhat alleviates the zero-frequency problem. However, the classification of a class then becomes an add-one competition, the class with the least number of raw add-ones is likely to be assigned.\\\\
+Weka's Naive Bayes algorithm performed poorly on the development data. Naive Bayes correctly classified fewer training instances than 0-R and 1-R, correctly classifying $28.29\%$ training instances. The poor performance of Weka's Naive Bayes can be attributed to two factors:
+
+\begin{enumerate}
+\item The loss of information associated with Naive Bayes ignoring the number of times an attribute occurred within a given Twitter user instance.
+\item The likely inclusion of (somewhat) redundant attributes in the training and development data. Redundant attributes cause problems with Naive Bayes due to their dependence, violating Naive Bayes key assumption of conditional independance between attributes. It is because of this reason that it is not a case of the more attributes the better for the performance of Naive Bayes.
+\end{enumerate}
+The Naive Bayes ML model was built in 1.43 seconds. 
+
+\subsection{Multinomial Naive Bayes}  
+
+\subsection{C4.5 Decision Tree}
+
+\begin{table} [ht]
+\caption{Weka ML Model Build Times}
+\centering
+	\begin{tabular}{| c | c | c | c | c | c |}
+	\hline
+	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} &\textbf{C4.5 Decision Tree}  \\
+	\hline
+	\textbf{Time (seconds)} & 0.02 & 1.31 & 1.43 & 0.20 & 226.01\\
+	\hline
+	\end{tabular}
+\label{table:run-table}
+\end{table}
+
+\begin{table} [th]
+\caption{Weka ML Training Instance Classification Summary}
+\centering
+	\begin{tabular}{| c | c | c | c | c | c |}
+	\hline
+	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} &\textbf{C4.5 Decision Tree}  \\
+	\hline
+	\textbf{Correctly Classified Instances} & 29.71\% & 32.39\% & 28.28\% & 44.78\% & 40.89\%\\
+	\hline
+	\textbf{Mean F-Score} & 0.136 & 0.188 & 0.259 & 0.436 & 0.403 \\
+	\hline
+	\end{tabular}
+\label{table:eval-table}
+\end{table}
 
 \section{Conclusion}
 

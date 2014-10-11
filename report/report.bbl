@@ -8,6 +8,12 @@ Bo~Han, Paul Cook, and Timothy Baldwin.
   pages 421--432, Jeju Island, Korea, July 2012. Association for Computational
   Linguistics.
 
+\bibitem{holte-1R}
+Robert~C Holte.
+\newblock Very simple classification rules perform well on most commonly used
+  datasets.
+\newblock {\em Machine learning}, 11(1):63--90, 1993.
+
 \bibitem{pm-stem}
 Mirko Popovic and Peter Willett.
 \newblock The effectiveness of stemming for natural-language access to slovene
