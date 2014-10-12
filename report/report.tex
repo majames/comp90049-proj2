@@ -13,7 +13,7 @@
 \maketitle
 
 \section{Introduction}
-The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). The set of nominal classes (Twitter user locations) was restricted to Chicago, New York, San Francisco, Atlanta and Los Angeles. Feature vectors, containing 386 distinct attributes (words), and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and Bayesian classification algorithms were explored in Project 2.
+The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). The set of nominal classes (Twitter user locations) was restricted to Chicago, New York, San Francisco, Atlanta and Los Angeles. Feature vectors, containing 386 distinct attributes (words), and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and various Machine Learning (ML) classification algorithms, implemented in the Weka framework, were explored in Project 2.
 
 \section{Preprocessing Input Data - Feature Engineering}  
 
@@ -112,9 +112,9 @@ Originally, the ratio of training to development instances was approximately $4:
 
 \section{Geolocation Classification Algorithms And Results}
 
-The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. The ML implementations available via the Weka GUI framework were explored. Supervised Machine Learning (ML) techniques were explored, that is ML techniques in which the class value of the training data is exposed to the ML algorithms.\\\\
+The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. Supervised ML implementations available via the Weka GUI framework were explored. \\\\
 A holdout strategy was used to evaluate Weka's ML algorithms. The holdout strategy involved separating the data used for training the ML algorithms, training instances, and the data used for testing the performance of the ML algorithms, development instances. The number of vector instances was considered large enough, and number of classes small enough, to render N-fold validation inappropriate.\\\\
-The results of the different Weka ML algorithms are summarised in table ...
+The results of the different Weka ML algorithms are summarised in Table \ref{table:run-table} and \ref{table:eval-table}.
 
 \subsection{0-R and 1-R: Baseline Establishment}   
 
@@ -132,7 +132,7 @@ The Weka 1-R ML algorithm split on the 'twistenfm' attribute, as the 'twistenfm 
 
 \subsection{Naive Bayes}
 
-The Naive Bayes classifier is a simple probabilistic classifier based on Baye's theorem (\ref{eq:bayes}). 
+The Naive Bayes classifier is a simple probabilistic classifier based on Baye's theorem (\ref{eq:bayes}). Naive Bayes ML algorithms are quick to build and often perform well on various datasets \cite{zhang-naive}.
 
 \begin{gather*}
 P(Class|Attributes) = \frac{P(Attributes|Class)P(Attributes)}{P(Class)} \tag{1}\label{eq:bayes}
@@ -140,27 +140,45 @@ P(Class|Attributes) = \frac{P(Attributes|Class)P(Attributes)}{P(Class)} \tag{1}\
 Naive Bayes classifiers rests on two key assumptions:
 
 \begin{enumerate}
-\item Attributes are equally important, binary values are assigned to each attribute indicating whether they are present or not?????
-\item Attributes are assumed to be conditionally independent, that is attributes are assumed to be independent of one another, given a class (\ref{eq:naive}).
+\item Attributes are equally important.
+\item Attributes are assumed to be conditionally independent. Attributes are assumed to be independent of one another, given a class.
 \end{enumerate}   
-The assumption of conditional independence allows simple maximum likelihood estimations to be used to calculate the probabilities within equation. The approximation of attribute independence is often reasonable because the Naive BayesML classifier does not care about the actual probability of $P(Class|Attributes)$ rather it cares about the relative probabilities of $P(Class|Attributes)$.
+The approximation of attribute independence is rarely true in real-world applications. However,the approximation of attribute independence is often reasonable because the Naive Bayes ML classifier does not care about the actual probability of $P(Class|Attributes)$, rather it cares about the relative probabilities of $P(Class|Attributes)$. No matter how strong the dependencies among attributes Naive Bayes can still perform well, provided the dependencies are distributed evenly in classes or if the dependencies cancel each other out \cite{zhang-naive}. 
 
-\begin{gather*}\tag{2}\label{eq:naive}
-\begin{split}
-P(Class|Attributes) &= \frac{P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)}{P(Class)}\\
-&= P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)
-\end{split}
+\begin{gather*}
+class = argmax_{class}\{P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)\}
+\tag{2}\label{eq:naive}
 \end{gather*}
-The multiplication of a zero probability attribute class conditional can degrade the performance of Naive Bayes, the other probabilities calculations are 'discarded' regardless of their strength. The Naive Bayes method implemented in Weka handles the zero-frequency problem by adding one to the count of an attribute given a class. The 'add-one' solution somewhat alleviates the zero-frequency problem. However, the classification of a class then becomes an add-one competition, the class with the least number of raw add-ones is likely to be assigned.\\\\
-Weka's Naive Bayes algorithm performed poorly on the development data. Naive Bayes correctly classified fewer training instances than 0-R and 1-R, correctly classifying $28.29\%$ training instances. The poor performance of Weka's Naive Bayes can be attributed to two factors:
+The zero-frequency problem, the multiplication of a zero probability attribute-class conditional, is handled in Wekas Naive Bayes algorithm via Laplace (Add-One) Smoothing. Laplace Smoothing alleviates the zero-frequency problem, however the classification of a class can then become an 'add-one competition'; the class with the least number of raw add-ones is likely to be assigned.\\\\
+Various Naive Bayes algorithms differ in there calculation of $P(A_i|C)$. Two Weka based implementations of Naive Bayes, Gaussian and Multinomial, were explored for the classifying of the Twitter user locations.
 
-\begin{enumerate}
-\item The loss of information associated with Naive Bayes ignoring the number of times an attribute occurred within a given Twitter user instance.
-\item The likely inclusion of (somewhat) redundant attributes in the training and development data. Redundant attributes cause problems with Naive Bayes due to their dependence, violating Naive Bayes key assumption of conditional independance between attributes. It is because of this reason that it is not a case of the more attributes the better for the performance of Naive Bayes.
-\end{enumerate}
+\subsubsection{Gaussian Naive Bayes}
+
+Weka's Naive Bayes algorithm uses a Gaussian distribution to model the continuous values associated with a class. Gaussian Naive Bayes approximates $P(A_i|C)$ by segmenting the training data by class, computing the mean ($\mu_c$) and variance ($\sigma_c$) of attribute value $A_i$ for class $c_i$, and using the standard probability density formula for a Gaussian random variable (\ref{eq:gauss}).
+
+\begin{gather*}
+P(A_i|Class) = \frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{(v-\mu_c)^{2}}{2\sigma_c^{2}}}
+\tag{3}\label{eq:gauss}
+\end{gather*}
+Weka's Naive Bayes algorithm performed poorly on the development data. Naive Bayes correctly classified fewer training instances than 0-R and 1-R, correctly classifying $28.29\%$ training instances. The poor performance of Gaussian Naive Bayes is likely to be attributed to the Gaussian distributions being a poor model for the Twitter attribute values \cite{john-naive}.\\\\
+Intuitively, a word that a Twitter user tweets more frequently is more likely to be an indication of a class than a word they tweet less frequently. For example, the more times a Twitter user tweets the word 'chicago' the likelier it is that said Twitter user is from Chicago. However, a word that appears more frequently within a Twitter user profile than the expected value ($\mu_c$) is penalised in Gaussian Naive Bayes, as equation (\ref{eq:gauss}) produces a small number. This behaviour of Gaussian Naive Bayes runs counter to intuition stated above and is likely to be the cause of its poor performance.\\\\
 The Naive Bayes ML model was built in 1.43 seconds. 
 
 \subsection{Multinomial Naive Bayes}  
+
+Multinomial Naive Bayes models the distribution of words in a Twitter document as a multinomial \cite{ren-multi}. Multinomial Naive Bayes is well suited for modelling of the Twitter data. It offers the  following advantages:
+
+\begin{enumerate}
+\item Based purely on word appearance, not non-appearance.
+\item Can account for multiple repetitions of a word
+\item Treats common words differently from unusual ones
+\end{enumerate} 
+Multinomial Naive Bayes is faster than Guassian Naive Bayes because:
+
+\begin{enumerate}
+\item Ignore words that do not appear in the document
+\item Internally, Weka uses a sparse representation of the data
+\end{enumerate} 
 
 \subsection{C4.5 Decision Tree}
 

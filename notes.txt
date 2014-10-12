@@ -40,7 +40,9 @@ Weka:
         Assumption of independence is OK because we dont care about the actual probablities... 
         what we care is that the greatest probablity is assigned to the correct class. Redundant attributes cause problems with Naive Bayes due to their dependence. It is NOT a case of the more attributes the better.
 
-        Redundant attributes 
+        Laplace smoothing to avoid multiplication of zeros
+
+        Uses Gaussian distributions by default for numeric attributes
 
 
     Naive Bayes Multinomial:
