@@ -21,6 +21,12 @@ George~H John and Pat Langley.
   artificial intelligence}, pages 338--345. Morgan Kaufmann Publishers Inc.,
   1995.
 
+\bibitem{kib-svm-bayes}
+Ashraf~M Kibriya, Eibe Frank, Bernhard Pfahringer, and Geoffrey Holmes.
+\newblock Multinomial naive bayes for text categorization revisited.
+\newblock In {\em AI 2004: Advances in Artificial Intelligence}, pages
+  488--499. Springer, 2005.
+
 \bibitem{pm-stem}
 Mirko Popovic and Peter Willett.
 \newblock The effectiveness of stemming for natural-language access to slovene

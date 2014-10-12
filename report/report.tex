@@ -16,6 +16,7 @@
 The objective of Project 2 was to build a geolocation classifier for Twitter users, based on the content of their Tweets (ASCII strings between 1 and 140 characters in length). The set of nominal classes (Twitter user locations) was restricted to Chicago, New York, San Francisco, Atlanta and Los Angeles. Feature vectors, containing 386 distinct attributes (words), and a large corpus of American Tweets was supplied as part of Project 2. Token-level and semantic generalisation feature engineering methods and various Machine Learning (ML) classification algorithms, implemented in the Weka framework, were explored in Project 2.
 
 \section{Preprocessing Input Data - Feature Engineering}  
+\label{section:preproc}
 
 Several heuristics were employed in the preprocessing of the the feature vector attributes and the training, development and test twitter files to improve the performance of the classification algorithms explored in Project 2. The preprocessing steps were first employed on the given feature vector attributes, before being employed on the Twitter data, to produce new training, development and test vector instances.\\\\
 The reduction in the size of the feature vector instance files, due to the preprocessing steps outlined below, are summarised in Table \ref{table:input-table}.
@@ -23,14 +24,14 @@ The reduction in the size of the feature vector instance files, due to the prepr
 \subsection{Unimelb English Social Media Normalisation Lexicon - Twitter Text Normalisation}
 \label{subsec:normal}
 
-Normalising text into a canocial form increases the consistency of the text and reduces the problem sample space (by reducing the number of different tokens to consider). Good text normalisation techniques are highly document dependent, there is no all purpose normalisation procedure.\\\\
-The supplied Twitter data was normalised using the University of Melbourne's (Unimelb)English Social Media Normalisation (ESMN) Lexicon. The Unimelb ESMN Lexicon mapped OOV words to IV words, therefore a simple (and quick) linear search and substitution through the vector attributes and twitter data was all that was required to (somewhat) normalise the vector attributes and twitter data.\\\\
-The ESMN Lexicon was chosen due to it offering a fast, lightweight and easy-to-use solution that was suitable for high-volume microblog (Twitter) pre-processing. Further, the ESMN Lexicon had a large volume of normalisation, containing over 40,000 entries \citep{bald-ESMNL}. 
+Normalising text into a canocial form increases the consistency of the text and reduces the problem sample space (by reducing the number of different words/tokens in the sample space). Good text normalisation techniques are highly document dependent, there is no all purpose normalisation procedure.\\\\
+The supplied Twitter data was normalised using the University of Melbourne's (Unimelb) English Social Media Normalisation (ESMN) Lexicon. The Unimelb ESMN Lexicon mapped OOV words to IV words. A linear search and substitution applied to the given vector attributes and twitter data was performed to (somewhat) normalise the vector attributes and twitter data.\\\\
+The ESMN Lexicon was chosen due to it offering a fast, lightweight and easy-to-use solution that was suitable for high-volume microblog (Twitter) pre-processing. Further, the ESMN Lexicon had a large volume of OOV-IV pairs, containing over 40,000 entries \citep{bald-ESMNL}. 
 
 \subsection{Word Stemming}
 \label{subsec:stem}
 
-Stemming is the process of reducing inflicted words to their stem (base form) \citep{pm-stem}. A Porter Stemmer algorithm was used in the preprocessing of the location and tweet files. \\\\
+Stemming is the process of reducing inflected words to their stem (base form) \citep{pm-stem}. A Porter Stemmer \cite{pm-stem} algorithm was used in the preprocessing of the location and tweet files. \\\\
 The Porter Stemmer algorithm was found to further distort a subset of misspelled words within the tweet bodies, however the Porter Stemmer was also capable of (partially) correcting miss-spelled location words. Further, the Porter Stemmer reduced the sample space of the problem by introducing consistency in tweet words and reducing the number of words in the preprocessed tweets.\\\\
 A sample of differences between tweet and feature vector strings with and without the Porter Stemmer preprocessing step can be seen in Table \ref{table:stem-tweet}.
    
@@ -51,7 +52,7 @@ A sample of differences between tweet and feature vector strings with and withou
 \end{table}
 
 \subsection{Removal of Stop Words And Excess White Space}
-A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:normal} and \ref{subsec:stem}). Common words and words of one-character length carried little entropy\citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}), and therefore were removed from the vector attributes and corresponding twitter data.\\\\
+A large amount of tweets and given features contained words which were one character in length and words which were extremely common in the English language (especially after preprocessing stage \ref{subsec:normal} and \ref{subsec:stem}). Common words and words of one-character length carried little entropy \citep{ra-stop} in determining descriptive features for geolocating a Twitter user (Table \ref{table:stop-words}), and therefore were removed from the vector attributes and corresponding twitter data.\\\\
 It is worth noting that stop words can cause problems when a tweet contains informative 'geolocating' phrases that include them. However, as a 'bag of words' model was used for modelling the twitter document, information contained within phrases was already lost. \\\\
 The list of stop words, contained within the NLPK library for python, was used to remove stop words from the locations and tweet texts.
 
@@ -74,7 +75,7 @@ The list of stop words, contained within the NLPK library for python, was used t
 Initially, a feature vector instance was supplied for each individual tweet. However, as Project 2 involved the geolocation of Twitter USERS, the supplied training, development and test data was restructured to contain a feature vector for each individual Twitter user.\\\\
 The restructuring of the model vectors to be per-user had the advantage of reducing the number of vectors that had to be processed. The potential disadvantage of the reduction in data-points in the new per-user model was offset by the information being retained in the now richer instance vectors (Table \ref{table:user-vectors-table}).\\\\
 After restructuring the instances to be per-user, the number of training and development instances was 22,993 and 22,579 respectively. The similarity in the number of training and development instances was inappropriate as ideally the number of training instances should be maximised whilst still allowing enough development instances to sufficiently test the explored machine learning algorithms.\\\\
-Originally, the ratio of training to development instances was approximately $4:1$. To re-establish the original balance of training and development data 13,465 development instances were relocated into the training file resulting in 36,458 training instances and 9,114 development instances.    
+Originally, the ratio of training to development instances was approximately $4:1$. To re-establish the original balance of training and development data 13,465 development instances were relocated into the training file, resulting in 36,458 training instances and 9,114 development instances.    
 
 \begin{table} [ht]
 \caption{Feature Vector Restructuring}
@@ -112,84 +113,81 @@ Originally, the ratio of training to development instances was approximately $4:
 
 \section{Geolocation Classification Algorithms And Results}
 
-The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. Supervised ML implementations available via the Weka GUI framework were explored. \\\\
-A holdout strategy was used to evaluate Weka's ML algorithms. The holdout strategy involved separating the data used for training the ML algorithms, training instances, and the data used for testing the performance of the ML algorithms, development instances. The number of vector instances was considered large enough, and number of classes small enough, to render N-fold validation inappropriate.\\\\
-The results of the different Weka ML algorithms are summarised in Table \ref{table:run-table} and \ref{table:eval-table}.
+The following results were obtained using the preprocessed model space representation (feature vectors) of the Twitter users. Supervised Rule Based and Bayesian ML algorithm implementations available in the Weka GUI framework were explored. \\\\
+A holdout strategy was used to evaluate Weka's ML algorithms. The holdout strategy involved separating the data used for training the ML algorithms, training instances, from the data used for testing the performance of the ML algorithms, development instances. The number of Twitter vector instances was considered large enough, and number of classes small enough, to render N-fold validation inappropriate.\\\\
+The results of the different ML algorithms explored in Project 2 are summarised in Table \ref{table:run-table} and \ref{table:eval-table}. All of the ML algorithms explored in the following sections built their respective models very quickly. Therefore, the performance of the ML algorithms was measured using classification and weighted average F1 metrics. F1 metrics were weighted by the proportion of how many elements were in each class. 
 
 \subsection{0-R and 1-R: Baseline Establishment}   
 
-0-R and 1-R algorithms are popular rule based machine learning algorithms often used for establishing baselines in machine learning tasks. 0-R and 1-R algorithms have been proven to perform well on many datasets, achieving close to more complex solution accuracies, whilst having drastically reduced complexity \cite{holte-1R}. The 0-R and 1-R baselines were used to determine the intrinsic difficulty of Project 1 and gauge the performance of more complex ML solutions.
+The popular rule based ML algorithms 0-R and 1-R are often used for establishing baselines in ML tasks. These algorithms have been proven to perform well on many datasets, achieving performance results close to more complex solution accuracies, whilst having drastically reduced complexity \cite{holte-1R}. The 0-R and 1-R baselines were used to determine the intrinsic difficulty of Project 2 and gauge the performance of more complex Bayesian ML solutions.
 
 \subsubsection{0-R Decision Rule}
 
 The 0-R ML algorithm is (arguably) the most simplistic ML algorithm available in the Weka libraries. 0-R classifies every instance with the class value that occurs must frequently in the training data.\\\\
-The Los Angeles, LA, class occurred most frequently in the training data, occurring in $\frac{11,126}{36,458} = 30.5\%$ of instances. Therefore, the Weka 0-R model classified each Twitter user test instance as having being Tweeted from within LA, resulting in a classification accuracy of $29.7\%$. Further, the 0-R ML model was built extremely quickly, taking only 0.02 seconds to build.    
+The Los Angeles, LA, class occurred most frequently in the training data, occurring in $30.5\%$ of instances. Therefore, the Weka 0-R model classified each Twitter user test instance as having being Tweeted from within LA, resulting in a classification accuracy of $29.7\%$ and an F1 weighted average of 0.136.    
 
 \subsubsection{1-R Decision Rule}
 
-The 1-R ML algorithm is simplistic in nature and often performs very well on many datasets \cite{holte-1R}. 1-R ML algorithm involves making a decision on which class a test instance corresponds to based on a single attribute value. The attribute which minimises the error rate of the decision is used as the splitting attribute.\\\\
-The Weka 1-R ML algorithm split on the 'twistenfm' attribute, as the 'twistenfm attribute' had the smallest error rate producing $\frac{12,764}{36,458} = 35\%$ correctly classified instances on the training data. 1-R performed reasonably well correctly classifying $32.9\%$ of development instances. The 1-R ML model was built in the very quick time of 1.31 seconds. 
+The 1-R ML algorithm is simplistic in nature and often performs very well on many datasets \cite{holte-1R}. This algorithm classifies a Twitter users location based on a single attribute value. The attribute which minimises the error rate of the decision is used as the splitting attribute.\\\\
+The Weka 1-R ML algorithm split on the 'twistenfm' attribute, as this attribute had the smallest error rate producing $35\%$ correctly classified instances on the training data. 1-R performed reasonably well correctly classifying $32.9\%$ of development instances. However, 1-R still exhibited a poor weighted F1-score of 0.188.
 
 \subsection{Naive Bayes}
 
 The Naive Bayes classifier is a simple probabilistic classifier based on Baye's theorem (\ref{eq:bayes}). Naive Bayes ML algorithms are quick to build and often perform well on various datasets \cite{zhang-naive}.
 
 \begin{gather*}
-P(Class|Attributes) = \frac{P(Attributes|Class)P(Attributes)}{P(Class)} \tag{1}\label{eq:bayes}
+P(Class|Attributes) = \frac{P(Attributes|Class)P(Class)}{P(Attributes)} \tag{1}\label{eq:bayes}
 \end{gather*}
 Naive Bayes classifiers rests on two key assumptions:
 
 \begin{enumerate}
 \item Attributes are equally important.
-\item Attributes are assumed to be conditionally independent. Attributes are assumed to be independent of one another, given a class.
+\item Attributes are assumed to be conditionally independent. That is, they are assumed to be independent of one another, given a class.
 \end{enumerate}   
-The approximation of attribute independence is rarely true in real-world applications. However,the approximation of attribute independence is often reasonable because the Naive Bayes ML classifier does not care about the actual probability of $P(Class|Attributes)$, rather it cares about the relative probabilities of $P(Class|Attributes)$. No matter how strong the dependencies among attributes Naive Bayes can still perform well, provided the dependencies are distributed evenly in classes or if the dependencies cancel each other out \cite{zhang-naive}. 
+The approximation of attribute independence is rarely true in real-world applications. However, the approximation of attribute independence is often reasonable because the Naive Bayes ML classifier does not care about the actual probability of $P(Class|Attributes)$, rather it cares about the relative probabilities of $P(Class|Attributes)$. No matter how strong the dependencies among attributes Naive Bayes can still perform well, provided the dependencies are distributed evenly in classes or if the dependencies cancel each other out \cite{zhang-naive}. 
 
 \begin{gather*}
 class = argmax_{class}\{P(A_1|Class)P(A_2|Class)...P(A_N|Class)P(Class)\}
 \tag{2}\label{eq:naive}
 \end{gather*}
 The zero-frequency problem, the multiplication of a zero probability attribute-class conditional, is handled in Wekas Naive Bayes algorithm via Laplace (Add-One) Smoothing. Laplace Smoothing alleviates the zero-frequency problem, however the classification of a class can then become an 'add-one competition'; the class with the least number of raw add-ones is likely to be assigned.\\\\
-Various Naive Bayes algorithms differ in there calculation of $P(A_i|C)$. Two Weka based implementations of Naive Bayes, Gaussian and Multinomial, were explored for the classifying of the Twitter user locations.
+Various Naive Bayes algorithms differ in there calculation of $P(A_i|C)$. Two Weka based implementations of Naive Bayes, Gaussian and Multinomial, were explored for the classifying of Twitter user locations.
 
 \subsubsection{Gaussian Naive Bayes}
+\label{subsubsect:GNB}
 
-Weka's Naive Bayes algorithm uses a Gaussian distribution to model the continuous values associated with a class. Gaussian Naive Bayes approximates $P(A_i|C)$ by segmenting the training data by class, computing the mean ($\mu_c$) and variance ($\sigma_c$) of attribute value $A_i$ for class $c_i$, and using the standard probability density formula for a Gaussian random variable (\ref{eq:gauss}).
+Weka's Naive Bayes algorithm uses a Gaussian distribution to model the continuous attribute values within the Twitter user feature vectors. Gaussian Naive Bayes (GNB) approximates $P(A_i|C)$ by segmenting the training data by class, computing the mean ($\mu_c$) and variance ($\sigma_c$) of attribute value $A_i$ for class $c_i$, and using the standard probability density formula for a Gaussian random variable (\ref{eq:gauss}) to approximate $P(A_i|C)$.
 
 \begin{gather*}
-P(A_i|Class) = \frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{(v-\mu_c)^{2}}{2\sigma_c^{2}}}
+P(A_i|Class) = \frac{1}{\sqrt{2\pi\sigma^{2}}}e^{-\frac{(v-\mu_c)^{2}}{2\sigma_c^{2}}}, \text{v - attribute value}
 \tag{3}\label{eq:gauss}
 \end{gather*}
-Weka's Naive Bayes algorithm performed poorly on the development data. Naive Bayes correctly classified fewer training instances than 0-R and 1-R, correctly classifying $28.29\%$ training instances. The poor performance of Gaussian Naive Bayes is likely to be attributed to the Gaussian distributions being a poor model for the Twitter attribute values \cite{john-naive}.\\\\
-Intuitively, a word that a Twitter user tweets more frequently is more likely to be an indication of a class than a word they tweet less frequently. For example, the more times a Twitter user tweets the word 'chicago' the likelier it is that said Twitter user is from Chicago. However, a word that appears more frequently within a Twitter user profile than the expected value ($\mu_c$) is penalised in Gaussian Naive Bayes, as equation (\ref{eq:gauss}) produces a small number. This behaviour of Gaussian Naive Bayes runs counter to intuition stated above and is likely to be the cause of its poor performance.\\\\
-The Naive Bayes ML model was built in 1.43 seconds. 
+Weka's GNB algorithm performed poorly on the development data. It achieved a better weighted F1-score, 0.259, than 0-R and 1-R algorithms. However, Naive Bayes only correctly classified $28.29\%$ training instances fewer than 0-R and 1-R. The poor performance of Gaussian Naive Bayes is likely to be attributed to the Gaussian distributions being a poor model for the Twitter attribute values \cite{john-naive}.\\\\
+Intuitively, a word that a Twitter user tweets more frequently is more likely to be an indication of a class than a word they tweet less frequently. For example, the more times a Twitter user tweets the word 'chicago' the likelier it is that said Twitter user is from Chicago. However, a word that appears more frequently within a Twitter user profile than the expected value ($\mu_c$) is penalised in Gaussian Naive Bayes, as equation (\ref{eq:gauss}) produces a small number. This behaviour of Gaussian Naive Bayes runs counter to intuition stated above and is likely to be the cause of its poor performance. 
 
-\subsection{Multinomial Naive Bayes}  
+\subsubsection{Multinomial Naive Bayes}  
 
-Multinomial Naive Bayes models the distribution of words in a Twitter document as a multinomial \cite{ren-multi}. Multinomial Naive Bayes is well suited for modelling of the Twitter data. It offers the  following advantages:
+Multinomial Naive Bayes (MNB) models the distribution of words in a Twitter document as a multinomial \cite{ren-multi}. The Multinomial approach is excellent for the Twitter user feature representation as it uses the term (attribute) frequency values to calculate simple maximum likelihood estimates.
 
+\begin{gather*}
+P(A_i|Class) = \frac{1 + f_{ic}}{N + \sum_{x=1}^N f_{xc}} \tag{4}\label{eq:multi}\\ f_{xc}\text{ - count of word x in all Twitter user vectors belonging to class c}
+\end{gather*}
+MNB had the following advantages over GNB when framed in the context of processing the Twitter user instance vectors:
 \begin{enumerate}
-\item Based purely on word appearance, not non-appearance.
-\item Can account for multiple repetitions of a word
-\item Treats common words differently from unusual ones
-\end{enumerate} 
-Multinomial Naive Bayes is faster than Guassian Naive Bayes because:
-
-\begin{enumerate}
-\item Ignore words that do not appear in the document
-\item Internally, Weka uses a sparse representation of the data
-\end{enumerate} 
-
-\subsection{C4.5 Decision Tree}
+\item In GNB the non-appearance of a word counts just as strongly as the appearance of a word. Intuitively, it makes more sense for a Twitter users assigned class (location) to be based more heavily on the words that they Tweet rather than the words they do not. MNB addresses this intuition by being based on word appearance, not non-appearance. 
+\item As the frequency of a word a Twitter user uses in their Tweets increases the more likely it is to indicate the class (location) of a Twitter user. MNB accounts for this phenomenon as $P(A_i|Class) \propto f_{ic}$. GNB does not take into account this phenomenon (see section \ref{subsubsect:GNB}).  
+\item GNB treats all words the same. For example, a common attribute 'i' and a more unusual attribute 'chicago' are treated as the same in GNB despite the likelihood that attribute 'chicago' tells us more about a Twitter users location. MNB accounts for this idea by ...     
+\end{enumerate}
+The results obtained using Weka's MNB agreed with the above three observations. MNB performed the best of the previously examined classifiers, correctly classifying $44.8\%$ of the Twitter development data and producing an F1-Score of 0.436.
 
 \begin{table} [ht]
 \caption{Weka ML Model Build Times}
 \centering
 	\begin{tabular}{| c | c | c | c | c | c |}
 	\hline
-	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} &\textbf{C4.5 Decision Tree}  \\
+	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} \\
 	\hline
-	\textbf{Time (seconds)} & 0.02 & 1.31 & 1.43 & 0.20 & 226.01\\
+	\textbf{Time (seconds)} & 0.02 & 1.31 & 1.43 & 0.20\\
 	\hline
 	\end{tabular}
 \label{table:run-table}
@@ -200,11 +198,11 @@ Multinomial Naive Bayes is faster than Guassian Naive Bayes because:
 \centering
 	\begin{tabular}{| c | c | c | c | c | c |}
 	\hline
-	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} &\textbf{C4.5 Decision Tree}  \\
+	 & \textbf{0-R} & \textbf{1-R} & \textbf{Naive Bayes} & \textbf{Multinomial Naive Bayes} \\
 	\hline
-	\textbf{Correctly Classified Instances} & 29.71\% & 32.39\% & 28.28\% & 44.78\% & 40.89\%\\
+	\textbf{Correctly Classified Instances} & 29.71\% & 32.39\% & 28.28\% & 44.78\%\\
 	\hline
-	\textbf{Mean F-Score} & 0.136 & 0.188 & 0.259 & 0.436 & 0.403 \\
+	\textbf{Mean F1-Score} & 0.136 & 0.188 & 0.259 & 0.436\\
 	\hline
 	\end{tabular}
 \label{table:eval-table}
@@ -212,9 +210,9 @@ Multinomial Naive Bayes is faster than Guassian Naive Bayes because:
 
 \section{Conclusion}
 
-X methods were considered for the task of geolocating Twitter users. By employing clever initialisation and exit parameters to the N-W algorithm, the Sub-Distance algorithm, gave the best overall results, .\\\\
-All algorithms, explored as part of Project 1, often exhibited false positives when considering location names that could also be used in language when NOT referring to a location. Therefore, a future area of research would include algorithms that take into account the context in which words are used.\\\\
-Further, the shortest runtime for a single tweet to be compared to all queries was 2.8 seconds (Sub-Distance). Therefore, to process all 3.6 million preprocessed tweets against all of the preprocessed locations would take over 116 days. If the whole Location-Tweet sample space had to be analysed faster methods of string approximation, such as the use of Tries or N-gram matching algorithms, are an area for further research. 
+Naive Bayesian methods were considered for the task of geolocating Twitter users. By employing clever probabilistic approximations, for the probability of an attribute given a class, the Multinomial Naive Bayesian algorithm, gave the best overall results.\\\\
+All algorithms, explored as part of Project 2, were run on the test step developed after the preprocessing steps outlined in Section \ref{section:preproc}. Therefore, a future area of research would include examining the performance of the algorithms on different representations of the Twitter data (including the original data set).\\\\
+Further, the algorithms explored were only a small subset of the large number of available ML algorithms. A large amount of literature indicates strong performance and advocates the use of Support Vector Machines \cite{kib-svm-bayes} and Decision Tree based algorithms for data mining of text documents. SVM and Decision Trees are a further area of research for the geolocation of Twitter users.
 
 \bibliographystyle{plain}
 \bibliography{references}
